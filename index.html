@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>香港医院位置</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.25/esri/themes/light/main.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        #header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        #mapDiv {
+            height: 600px;
+        }
+
+        #basemapGallery {
+            height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header">
+        <h1>香港医院位置地图</h1>
+    </div>
+    <div id="mapDiv"></div>
+    <div id="basemapGallery"></div>
+
+    <script src="https://js.arcgis.com/4.25/"></script>
+    <script>
+        require([
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/widgets/BasemapGallery",
+            "esri/widgets/ScaleBar",
+            "esri/widgets/Legend",
+            "esri/widgets/Search",
+            "esri/widgets/LayerList",
+            "esri/layers/FeatureLayer"
+        ], function (
+            Map,
+            MapView,
+            BasemapGallery,
+            ScaleBar,
+            Legend,
+            Search,
+            LayerList,
+            FeatureLayer
+        ) {
+            // 创建地图
+            const map = new Map({
+                basemap: "topo" // 任意一个底图
+            });
+
+            // 添加专题图层（医院位置图层）
+            const featureLayer = new FeatureLayer({
+                url: "https://www.geosceneonline.cn/server/rest/services/Hosted/医院位置/FeatureServer"
+            });
+            map.add(featureLayer);
+
+            // 创建地图视图，设置中心点为广东省台山市的大概经纬度
+            const view = new MapView({
+                container: "mapDiv",
+                map: map,
+                zoom: 11, // 适当调整缩放级别
+                center: [114.1181, 22.3754] 
+            });
+
+            // 添加比例尺微件
+            const scaleBar = new ScaleBar({
+                view: view
+            });
+            view.ui.add(scaleBar, "bottom-left");
+
+            // 添加图例微件
+            const legend = new Legend({
+                view: view
+            });
+            view.ui.add(legend, "bottom-right");
+
+            // 添加搜索框微件
+            const search = new Search({
+                view: view
+            });
+            view.ui.add(search, "top-left");
+
+            // 添加图层列表微件
+            const layerList = new LayerList({
+                view: view
+            });
+            view.ui.add(layerList, "top-right");
+
+            // 添加底图库微件
+            const basemapGallery = new BasemapGallery({
+                view: view,
+                container: "basemapGallery"
+            });
+        });
+    </script>
+</body>
+
+</html>
